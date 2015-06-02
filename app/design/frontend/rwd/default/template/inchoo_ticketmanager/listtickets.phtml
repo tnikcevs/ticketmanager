@@ -1,4 +1,5 @@
-<?php $collection = $this->getCollection(); ?>
+<?php
+$collection = $this->getCollection(); ?>
 <?php echo $this->getPagerHtml(); ?>
 <?php if ($collection->getSize()):
     ?>
@@ -9,7 +10,7 @@
         <col width="1"/>
         <thead>
         <tr>
-            <th class="number"><?php echo $this->__('Ticket Id # remove later') ?></th>
+            <th class="number"><?php echo $this->__('Ticket Id') ?></th>
             <th class="subject"><?php echo $this->__('Subject') ?></th>
             <th class="status"><?php echo $this->__('Status') ?></th>
             <th class="date"><?php echo $this->__('Date') ?></th>
@@ -20,10 +21,10 @@
         <?php
 
         foreach ($collection as $single):
-            $params = array($single->getCustomerId() => $single->getTicketId());
+            $params = array('id' => $single->getTicketId());
             $prepare_url = $this->getUrl('inchoo_ticketmanager/ticket/single', $params);
             $status = $this->escapeHtml($single->getStatus());
-            if((int)$status === 0){
+            if ((int)$status === 0) {
                 $status = 'closed';
             } else {
                 $status = 'opened';

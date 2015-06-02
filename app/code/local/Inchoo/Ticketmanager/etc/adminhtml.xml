@@ -4,17 +4,11 @@
     <system>
         <children>
             <inchoo_ticketmanager translate="title">
-                <title>Foggyline Test 1</title>
-                <action>adminhtml/system_account</action>
+                <title>Inchoo Ticketmanager</title>
+                <action>adminhtml/ticketmanager/index</action>
                 <sort_order>1</sort_order>
             </inchoo_ticketmanager>
         </children>
     </system>
 </menu>
 </config>
-        *
-        !.gitignore
-        !app/code/local/Inchoo/
-        !app/design/frontend/rwd/default/layout/inchoo_ticketmanager.xml
-        !app/design/frontend/rwd/default/template/inchoo_ticketmanager/
-        !app/etc/modules/Inchoo_Ticketmanager.xml

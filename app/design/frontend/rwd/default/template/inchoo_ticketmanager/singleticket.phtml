@@ -1,12 +1,13 @@
 <?php
-$post = $this->getRequest()->getParams();
-$ticket_id = reset($post);
+$ticket_id = $this->getRequest()->getParam('id', false);
 $ticket = Mage::getModel('inchoo_ticketmanager/manager')->load($ticket_id);
 $collection = $this->getCollection();
-
+$status = (int)$ticket->getStatus() === 0 ? 'closed' : 'opened';
+$status_value = (int)$ticket->getStatus() === 0 ? '1' : '0';
+$status_text = (int)$ticket->getStatus() === 0 ? 'opened' : 'closed';
 ?>
 <div class="page-title">
-    <h1><?php echo $this->__('Ticket' . " ($ticket_id)") ?></h1>
+    <h1><?php echo $this->__('Ticket' . " ($ticket_id) - $status") ?></h1>
     <a href="<?php echo $this->getUrl("inchoo_ticketmanager/ticket/list") ?>" class="button">
         <span><span><?php echo $this->__('Back to list') ?></span></span>
     </a>
@@ -23,11 +24,6 @@ $collection = $this->getCollection();
     </thead>
     <tbody>
     <?php foreach ($collection as $single): ?>
-        <?php
-        if ($single->getUserId === $this->getCustomerId()) {
-            $color = 'yellow';
-        }
-        ?>
         <tr>
             <td><?php echo $single->getMessage(); ?></td>
         </tr>
@@ -35,7 +31,7 @@ $collection = $this->getCollection();
     </tbody>
 </table>
 
-<form action="<?php echo $this->getUrl("inchoo_ticketmanager/ticket/reply", array(key($post) => $ticket_id)) ?>"
+<form action="<?php echo $this->getUrl("inchoo_ticketmanager/ticket/reply", array('id' => $ticket_id)) ?>"
       method="post"
       class="inchoo-ticketmanager" id="form-validate">
     <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
@@ -44,7 +40,8 @@ $collection = $this->getCollection();
         <span><?php echo $this->__('Reply') ?></span>
     </button>
     <div>
-        <button name="status" class="button" type="submit">MARK CLOSED</button>
+        <button name="status" class="button" type="submit" value="<?php echo $status_value; ?>">
+            MARK <?php echo $status_text; ?></button>
     </div>
 </form>
 

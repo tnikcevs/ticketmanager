@@ -4,8 +4,6 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
 {
 
     private $status = false;
-    private $_subject = false;
-    private $_message = false;
     private $_customer_id = false;
     private $_error = '';
 
@@ -29,12 +27,11 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
 
     public function singleAction()
     {
-        $post = $this->getRequest()->getParams();
-        $ticket = Mage::getModel('inchoo_ticketmanager/manager');
-
-        if ((current(array_keys($post)) !== $this->getCustomerId()) || $ticket->load($post[current(array_keys($post))])->getId() === null) {
-            $url = Mage::getUrl('inchoo_ticketmanager/ticket/list', array('_secure' => true));
-            Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
+        $ticket_id = $this->getRequest()->getParam('id', false);
+        $ticket = Mage::getModel('inchoo_ticketmanager/manager')->load($ticket_id);
+        if (!$ticket_id || ((int)$this->getCustomerId() !== (int)$ticket->getCustomerId())) {
+            $this->norouteAction();
+            return;
         }
         $this->loadLayout();
         $this->renderLayout();
@@ -49,94 +46,79 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
 
     public function submitAction()
     {
-        $post = $this->getRequest()->getPost();
+        $message = $this->getRequest()->getParam('message', false);
+        $subject = $this->getRequest()->getParam('subject', false);
 
-        /* if not submit, redirect */
-        if (!isset($post['message']) || !isset($post['subject'])) {
+        if (!$message || !$subject) {
+            Mage::getSingleton('core/session')->addError('Please fill all fields!');
             $url = Mage::getUrl('inchoo_ticketmanager/ticket/create', array('_secure' => true));
             Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
         }
 
-        $this->_message = $post['message'];
-        $this->_subject = $post['subject'];
-
-        if ($this->checkBeforeSubmit()) {
-            $ticket = Mage::getModel('inchoo_ticketmanager/manager');
-            $ticket->setSubject($this->_subject);
-            $ticket->setMessage($this->_message);
-            $ticket->setCustomerId($this->_customer_id);
-            $ticket->setTimestamp(Mage::getSingleton('core/date')->gmtDate());
-            $ticket->setWebsiteId(Mage::app()->getWebsite()->getId());
-            try {
-                $ticket->save();
-                $this->status = true;
-                $response_message = 'Ticket submited, we\'ll get back you soon!';
-            } catch (Exception $e) {
-                $this->status = false;
-                $response_message = $e->getMessage() . " ";
-            }
-        } else {
-            $response_message = $this->_error;
+        $ticket = Mage::getModel('inchoo_ticketmanager/manager');
+        $ticket->setSubject($subject);
+        $ticket->setMessage($message);
+        $ticket->setCustomerId($this->getCustomerId());
+        $ticket->setTimestamp(Mage::getSingleton('core/date')->gmtDate());
+        $ticket->setWebsiteId(Mage::app()->getWebsite()->getId());
+        try {
+            $ticket->save();
+            Mage::getSingleton('core/session')->addSuccess('Ticket submited, we\'ll get back you soon!');
+            $url = Mage::getUrl('inchoo_ticketmanager/ticket/list', array('_secure' => true));
+            Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
+        } catch (Exception $e) {
+            Mage::getSingleton('core/session')->addError('Error processing request');
+            $url = Mage::getUrl('inchoo_ticketmanager/ticket/create', array('_secure' => true));
+            Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
         }
-        $response = array('message' => $response_message, 'status' => $this->status);
 
-        $url = Mage::getUrl('inchoo_ticketmanager/ticket/list', array('_secure' => true));
-        Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
-//        echo json_encode($response);
     }
 
     public function replyAction()
     {
-        $response_message = 'default';
-        $post = $this->getRequest()->getParams();
-        if (isset($post['status'])) {
-            $manager = Mage::getModel('inchoo_ticketmanager/manager')->load((int)reset($post));
-            $manager->setStatus(0);
+        $status = $this->getRequest()->getParam('status', false);
+        $message = $this->getRequest()->getParam('message', false);
+        $ticket_id = $this->getRequest()->getParam('id', false);
+
+        $ticket = Mage::getModel('inchoo_ticketmanager/manager')->load($ticket_id);
+        if ((int)$ticket->getCustomerId() !== (int)$this->getCustomerId()) {
+            Mage::getSingleton('core/session')->addError('Please fill all fields!');
+            $url = Mage::getUrl('inchoo_ticketmanager/ticket/single', array('id' => $ticket_id, '_secure' => true));
+            Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
+        }
+        if ($status === '0' || $status === '1') {
+            $manager = Mage::getModel('inchoo_ticketmanager/manager')->load($ticket_id);
+            $manager->setStatus((int)$status);
             try {
                 $manager->save();
+                Mage::getSingleton('core/session')->addSuccess('Status changed!');
             } catch (Exception $e) {
-                $this->status = false;
-                $response_message = $e->getMessage() . " ";
-                exit($e->getMessage());
+                Mage::getSingleton('core/session')->addError('Error occured!');
             }
-            /*redirect via submit*/
-            $url = Mage::getUrl('inchoo_ticketmanager/ticket/list', array('_secure' => true));
+            $url = Mage::getUrl('inchoo_ticketmanager/ticket/single', array('id' => $ticket_id, '_secure' => true));
             Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
-        } elseif (isset($post['message']) && !empty($post['message'])) {
+        } elseif ($message) {
             $chat = Mage::getModel('inchoo_ticketmanager/chat');
-            $chat->setMessage($post['message']);
-            unset($post['message']);
-            $ticket_id = (int)reset($post);
-
+            $chat->setMessage($message);
             $chat->setTimestamp(Mage::getSingleton('core/date')->gmtDate());
-
-            if ($this->getCustomerId() && is_int($ticket_id)) {
-                $chat->setUserId($this->getCustomerId());
-                $chat->setTicketId($ticket_id);
-
-                try {
-                    $chat->save();
-                    $this->status = true;
-                    $response_message = 'Reply success!';
-                } catch (Exception $e) {
-                    $this->status = false;
-                    $response_message = $e->getMessage() . " ";
-                }
+            $chat->setUserId($this->getCustomerId());
+            $chat->setTicketId($ticket_id);
+            try {
+                $chat->save();
+                Mage::getSingleton('core/session')->addSuccess('Reply successful!!');
+            } catch (Exception $e) {
+                Mage::getSingleton('core/session')->addError('Reply failed!');
             }
 
-            /*redirect via submit*/
-            $url = Mage::getUrl('inchoo_ticketmanager/ticket/single', array($this->getCustomerId() => $ticket_id, '_secure' => true));
+            $url = Mage::getUrl('inchoo_ticketmanager/ticket/single', array('id' => $ticket_id, '_secure' => true));
             Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
-
-            /*json*/
-//            $response = array('message' => $response_message, 'status' => $this->status);
-//            echo json_encode($response);
 
 
         } else {
             /* redirect */
-            if (!isset($post['message']) || !isset($post['subject'])) {
-                $url = Mage::getUrl('inchoo_ticketmanager/ticket/index', array('_secure' => true));
+            if (!$status || !$message) {
+                Mage::getSingleton('core/session')->addError('Message empty!');
+                $url = Mage::getUrl('inchoo_ticketmanager/ticket/single', array('id' => $ticket_id, '_secure' => true));
                 Mage::app()->getFrontController()->getResponse()->setRedirect($url)->sendResponse();
             }
         }
@@ -155,27 +137,6 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
         }
     }
 
-    private function checkBeforeSubmit()
-    {
-        if (!$this->getCustomerId()) {
-            $this->_error .= 'Customer not registered! ';
-        }
-
-        if (!$this->_subject || empty($this->_subject)) {
-            $this->_error .= 'Subject empty! ';
-        }
-
-        if (!$this->_message || empty($this->_message)) {
-            $this->_error .= 'Message empty! ';
-        }
-
-        if (!$this->getCustomerId() || (!$this->_subject || empty($this->_subject)) || (!$this->_message || empty($this->_message))) {
-            return false;
-        }
-
-        return true;
-    }
-
 
     /**
      * Action predispatch
@@ -192,15 +153,10 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
 
         $action = $this->getRequest()->getActionName();
         $openActions = array(
-            'create',
             'login',
             'logoutsuccess',
-            'forgotpassword',
-            'forgotpasswordpost',
-            'resetpassword',
-            'resetpasswordpost',
-            'confirm',
-            'confirmation'
+//            'confirm',
+//            'confirmation'
         );
         $pattern = '/^(' . implode('|', $openActions) . ')/i';
 
