@@ -1,0 +1,50 @@
+<?php $collection = $this->getCollection(); ?>
+<?php echo $this->getPagerHtml(); ?>
+<?php if ($collection->getSize()):
+    ?>
+    <table class="data-table orders" id="my-orders-table">
+        <col width="1"/>
+        <col width="1"/>
+        <col/>
+        <col width="1"/>
+        <thead>
+        <tr>
+            <th class="number"><?php echo $this->__('Ticket Id # remove later') ?></th>
+            <th class="subject"><?php echo $this->__('Subject') ?></th>
+            <th class="status"><?php echo $this->__('Status') ?></th>
+            <th class="date"><?php echo $this->__('Date') ?></th>
+            <th class="view">&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+
+        foreach ($collection as $single):
+            $params = array($single->getCustomerId() => $single->getTicketId());
+            $prepare_url = $this->getUrl('inchoo_ticketmanager/ticket/single', $params);
+            $status = $this->escapeHtml($single->getStatus());
+            if((int)$status === 0){
+                $status = 'closed';
+            } else {
+                $status = 'opened';
+            }
+            ?>
+            <tr>
+                <td class="number"><?php echo $single->getTicketId() ?></td>
+                <td class="subject"><?php echo $this->escapeHtml($single->getSubject()) ?></td>
+                <td class="status"><em><?php echo $status ?></em></td>
+                <td class="date"><em><?php echo $this->formatDate($single->getTimestamp()) ?></em></td>
+                <td class="a-center view">
+                <span class="nobr">
+                    <a href="<?php echo $prepare_url; ?>"><?php echo $this->__('View ticket') ?></a>
+                </span>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <script type="text/javascript">decorateTable('inchoo_ticketmanager');</script>
+    <?php echo $this->getPagerHtml(); ?>
+<?php else: ?>
+    <p><?php echo $this->__('You have placed no tickets.'); ?></p>
+<?php endif ?>

@@ -1,0 +1,93 @@
+<?php
+$post = $this->getRequest()->getParams();
+$ticket_id = reset($post);
+$ticket = Mage::getModel('inchoo_ticketmanager/manager')->load($ticket_id);
+$collection = $this->getCollection();
+
+?>
+<div class="page-title">
+    <h1><?php echo $this->__('Ticket' . " ($ticket_id)") ?></h1>
+    <a href="<?php echo $this->getUrl("inchoo_ticketmanager/ticket/list") ?>" class="button">
+        <span><span><?php echo $this->__('Back to list') ?></span></span>
+    </a>
+</div>
+<div class="subject">
+    <h2>Subject: <?php echo $this->escapeHtml($ticket->getSubject()); ?></h2>
+</div>
+<table class="data-table orders" id="my-orders-table">
+    <col width="10"/>
+    <thead>
+    <tr>
+        <th class="ticket-message"><?php echo $this->escapeHtml($ticket->getMessage()); ?></th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($collection as $single): ?>
+        <?php
+        if ($single->getUserId === $this->getCustomerId()) {
+            $color = 'yellow';
+        }
+        ?>
+        <tr>
+            <td><?php echo $single->getMessage(); ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+<form action="<?php echo $this->getUrl("inchoo_ticketmanager/ticket/reply", array(key($post) => $ticket_id)) ?>"
+      method="post"
+      class="inchoo-ticketmanager" id="form-validate">
+    <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+    <textarea name="message"></textarea>
+    <button type="submit" title="<?php echo $this->__('Reply') ?>" class="button">
+        <span><?php echo $this->__('Reply') ?></span>
+    </button>
+    <div>
+        <button name="status" class="button" type="submit">MARK CLOSED</button>
+    </div>
+</form>
+
+
+<div id="formSuccess"></div>
+
+<script type="text/javascript">
+    //<![CDATA[
+    //    var formId = 'form-validate';
+    //    var myForm = new VarienForm(formId, true);
+    //    var postUrl = '<?php //echo $this->getUrl("inchoo_ticketmanager/ticket/reply", array(key($post) => $ticket_id)) ?>////';
+    //    function doAjax() {
+    //        if (myForm.validator.validate()) {
+    //            new Ajax.Updater(
+    //                {success: 'formSuccess'}, postUrl, {
+    //                    method: 'post',
+    //                    asynchronous: true,
+    //                    evalScripts: false,
+    ////                    dataType: 'json',
+    //
+    //                    onComplete: function (request, json) {
+    //                        var parse_response = JSON.parse(request.responseText)
+    //                        var response_div = document.getElementById('formSuccess');
+    //
+    //                        if (!parse_response.status) {
+    //                            //send error
+    //                            response_div.innerHTML = parse_response.message;
+    //                        } else {
+    //                            //send success
+    //                            response_div.innerHTML = parse_response.message;
+    //                        }
+    //                    },
+    //                    onLoading: function (request, json) {
+    //                    },
+    //                    parameters: $(formId).serialize(true),
+    //                }
+    //            );
+    //        }
+    //    }
+    //
+    //    new Event.observe(formId, 'submit', function (e) {
+    //        e.stop();
+    //        doAjax();
+    //    });
+    //]]>
+</script>

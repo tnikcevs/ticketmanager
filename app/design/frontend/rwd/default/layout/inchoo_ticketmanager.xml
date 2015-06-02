@@ -1,0 +1,73 @@
+<layout version="1.0.0.0">
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink">
+                <name>inchoo_ticketmanager</name>
+                <path>inchoo_ticketmanager/ticket/index</path>
+                <label>Inchoo Ticketmanager</label>
+            </action>
+        </reference>
+        <!--<reference name="customer_account_navigation">-->
+            <!--<action method="addLink">-->
+                <!--<name>inchoo_ticketmanager_list</name>-->
+                <!--<path>inchoo_ticketmanager/ticket/list</path>-->
+                <!--<label>Inchoo Ticketmanager list</label>-->
+            <!--</action>-->
+        <!--</reference>-->
+        <!--<reference name="customer_account_navigation">-->
+            <!--<action method="addLink">-->
+                <!--<name>inchoo_ticketmanager_single</name>-->
+                <!--<path>inchoo_ticketmanager/ticket/single</path>-->
+                <!--<label>Inchoo Ticketmanager single</label>-->
+            <!--</action>-->
+        <!--</reference>-->
+        <!--<reference name="customer_account_navigation">-->
+            <!--<action method="addLink">-->
+                <!--<name>inchoo_ticketmanager_create</name>-->
+                <!--<path>inchoo_ticketmanager/ticket/create</path>-->
+                <!--<label>Inchoo Ticketmanager create</label>-->
+            <!--</action>-->
+        <!--</reference>-->
+    </customer_account>
+
+    <!--INDEX PAGE-->
+
+    <inchoo_ticketmanager_ticket_index><!--sets handle of customer account(navbar on the left), for inchoo_tickermanager_ticket_index-->
+        <update handle="customer_account"/>
+        <reference name="my.account.wrapper">
+            <block type="inchoo_ticketmanager/index" name="inchoo_ticketmanager_index"
+                   template="inchoo_ticketmanager/index.phtml"/>
+        </reference>
+    </inchoo_ticketmanager_ticket_index>
+
+    <!--LIST OF TICKETS PAGE-->
+
+    <inchoo_ticketmanager_ticket_list>
+        <update handle="customer_account"/>
+        <reference name="my.account.wrapper">
+            <block type="inchoo_ticketmanager/listtickets" name="inchoo_ticketmanager_list"
+                   template="inchoo_ticketmanager/listtickets.phtml"/>
+        </reference>
+    </inchoo_ticketmanager_ticket_list>
+
+    <!--SINGLE TICKET PAGE-->
+
+    <inchoo_ticketmanager_ticket_single>
+        <update handle="customer_account"/>
+        <reference name="my.account.wrapper">
+            <block type="inchoo_ticketmanager/singleticket" name="inchoo_ticketmanager_single"
+                   template="inchoo_ticketmanager/singleticket.phtml"/>
+        </reference>
+    </inchoo_ticketmanager_ticket_single>
+
+    <!--CREATE TICKET PAGE-->
+
+    <inchoo_ticketmanager_ticket_create>
+        <update handle="customer_account"/>
+        <reference name="my.account.wrapper">
+            <block type="inchoo_ticketmanager/createticket" name="inchoo_ticketmanager_create"
+                   template="inchoo_ticketmanager/createticket.phtml"/>
+        </reference>
+    </inchoo_ticketmanager_ticket_create>
+
+</layout>

@@ -1,0 +1,68 @@
+<form action="<?php echo $this->getUrl("inchoo_ticketmanager/ticket/submit") ?>" method="post"
+      class="inchoo-ticketmanager" id="form-validate">
+
+    <input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>"/>
+    <label>
+        <span>SUBJECT:</span><span>*</span><br/>
+
+        <div class="input-box">
+            <input type="text" name="subject" id="subject" title="<?php echo $this->__('Subject') ?>"
+                   value="<?php echo $this->escapeHtml($this->test()) ?>" class="input-text"/>
+        </div>
+    </label>
+    <label>
+        <span>MESSAGE:</span><span>*</span><br/>
+
+        <div class="input-box">
+            <input type="text" name="message" id="message" title="<?php echo $this->__('Message') ?>"
+                   value="<?php echo $this->escapeHtml($this->test()) ?>" class="input-text"/>
+        </div>
+    </label>
+    <button type="submit" title="<?php echo $this->__('Submit ticket') ?>" class="button">
+        <span><span><?php echo $this->__('Submit ticket') ?></span></span>
+    </button>
+</form>
+<div id="formSuccess"></div>
+
+<script type="text/javascript">
+    //<![CDATA[
+//    var formId = 'form-validate';
+//    var myForm = new VarienForm(formId, true);
+//    var postUrl = '<?php //echo $this->getUrl("inchoo_ticketmanager/ticket/submit") ?>////';
+//    function doAjax() {
+//        if (myForm.validator.validate()) {
+//            new Ajax.Updater(
+//                {success: 'formSuccess'}, postUrl, {
+//                    method: 'post',
+//                    asynchronous: true,
+//                    evalScripts: false,
+//                    dataType: 'json',
+//
+//                    onComplete: function (request, json) {
+//                        var parse_response = JSON.parse(request.responseText)
+//                        var response_div = document.getElementById('formSuccess');
+//
+//                        if (!parse_response.status) {
+//                            //send error
+//                            response_div.innerHTML = parse_response.message;
+//                        } else {
+//                            //send success
+//                            Element.hide(formId);
+//                            Element.show('formSuccess');
+//                            response_div.innerHTML = parse_response.message;
+//                        }
+//                    },
+//                    onLoading: function (request, json) {
+//                    },
+//                    parameters: $(formId).serialize(true),
+//                }
+//            );
+//        }
+//    }
+//
+//    new Event.observe(formId, 'submit', function (e) {
+//        e.stop();
+//        doAjax();
+//    });
+    //]]>
+</script>
