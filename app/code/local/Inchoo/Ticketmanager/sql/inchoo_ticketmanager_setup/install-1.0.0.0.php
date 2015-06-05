@@ -61,7 +61,7 @@ $table = $installer->getConnection()
         'nullable' => false,
     ), 'Ticket Id')
     ->addColumn('user_id', Varien_Db_Ddl_Table::TYPE_INTEGER, 10, array(
-        'nullable' => false,
+        'nullable' => true,
     ), 'User Id')
     ->addColumn('timestamp', Varien_Db_Ddl_Table::TYPE_TIMESTAMP, null, array(
         'nullable' => false
@@ -74,13 +74,6 @@ $table = $installer->getConnection()
         'ticket_id',
         $installer->getTable('inchoo_ticketmanager/manager'),
         'ticket_id',
-        Varien_Db_Ddl_Table::ACTION_CASCADE,
-        Varien_Db_Ddl_Table::ACTION_CASCADE
-    )->addForeignKey(
-        $installer->getFkName('inchoo_ticketmanager/chat', 'user_id', 'customer/entity', 'entity_id'),
-        'user_id',
-        $installer->getTable('customer/entity'),
-        'entity_id',
         Varien_Db_Ddl_Table::ACTION_CASCADE,
         Varien_Db_Ddl_Table::ACTION_CASCADE
     );

@@ -3,16 +3,6 @@
 class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_Action
 {
 
-    private $status = false;
-    private $_customer_id = false;
-    private $_error = '';
-
-//    public function _construct()
-//    {
-//        parent::_construct();
-//        $this->getCustomerId();
-//    }
-
     public function indexAction()
     {
         $this->loadLayout();
@@ -21,6 +11,7 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
 
     public function listAction()
     {
+
         $this->loadLayout();
         $this->renderLayout();
     }
@@ -34,6 +25,7 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
             return;
         }
         $this->loadLayout();
+        $this->_initLayoutMessages('customer/session');
         $this->renderLayout();
     }
 
@@ -101,7 +93,7 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
             $chat = Mage::getModel('inchoo_ticketmanager/chat');
             $chat->setMessage($message);
             $chat->setTimestamp(Mage::getSingleton('core/date')->gmtDate());
-            $chat->setUserId($this->getCustomerId());
+            $chat->setUserId(null);
             $chat->setTicketId($ticket_id);
             try {
                 $chat->save();
@@ -151,22 +143,10 @@ class Inchoo_Ticketmanager_TicketController extends Mage_Core_Controller_Front_A
             return;
         }
 
-        $action = $this->getRequest()->getActionName();
-        $openActions = array(
-            'login',
-            'logoutsuccess',
-//            'confirm',
-//            'confirmation'
-        );
-        $pattern = '/^(' . implode('|', $openActions) . ')/i';
-
-        if (!preg_match($pattern, $action)) {
-            if (!$this->_getSession()->authenticate($this)) {
-                $this->setFlag('', 'no-dispatch', true);
-            }
-        } else {
-            $this->_getSession()->setNoReferer(true);
+        if (!$this->_getSession()->authenticate($this)) {
+            $this->setFlag('', 'no-dispatch', true);
         }
+
     }
 
     protected function _getSession()

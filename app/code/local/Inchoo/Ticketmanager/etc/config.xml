@@ -73,4 +73,13 @@
             </adminhtml>
         </routers>
     </admin>
+    <!--<adminhtml>-->
+        <!--<layout>-->
+            <!--<updates>-->
+                <!--<inchoo_ticketmanager>-->
+                    <!--<file>inchoo_ticketmanager.xml</file>-->
+                <!--</inchoo_ticketmanager>-->
+            <!--</updates>-->
+        <!--</layout>-->
+    <!--</adminhtml>-->
 </config>

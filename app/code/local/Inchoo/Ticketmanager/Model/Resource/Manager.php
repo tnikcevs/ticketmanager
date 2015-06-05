@@ -6,4 +6,5 @@ class Inchoo_Ticketmanager_Model_Resource_Manager extends Mage_Core_Model_Resour
     {
         $this->_init('inchoo_ticketmanager/manager', 'ticket_id');
     }
+
 }

@@ -8,25 +8,25 @@
             </action>
         </reference>
         <!--<reference name="customer_account_navigation">-->
-            <!--<action method="addLink">-->
-                <!--<name>inchoo_ticketmanager_list</name>-->
-                <!--<path>inchoo_ticketmanager/ticket/list</path>-->
-                <!--<label>Inchoo Ticketmanager list</label>-->
-            <!--</action>-->
+        <!--<action method="addLink">-->
+        <!--<name>inchoo_ticketmanager_list</name>-->
+        <!--<path>inchoo_ticketmanager/ticket/list</path>-->
+        <!--<label>Inchoo Ticketmanager list</label>-->
+        <!--</action>-->
         <!--</reference>-->
         <!--<reference name="customer_account_navigation">-->
-            <!--<action method="addLink">-->
-                <!--<name>inchoo_ticketmanager_single</name>-->
-                <!--<path>inchoo_ticketmanager/ticket/single</path>-->
-                <!--<label>Inchoo Ticketmanager single</label>-->
-            <!--</action>-->
+        <!--<action method="addLink">-->
+        <!--<name>inchoo_ticketmanager_single</name>-->
+        <!--<path>inchoo_ticketmanager/ticket/single</path>-->
+        <!--<label>Inchoo Ticketmanager single</label>-->
+        <!--</action>-->
         <!--</reference>-->
         <!--<reference name="customer_account_navigation">-->
-            <!--<action method="addLink">-->
-                <!--<name>inchoo_ticketmanager_create</name>-->
-                <!--<path>inchoo_ticketmanager/ticket/create</path>-->
-                <!--<label>Inchoo Ticketmanager create</label>-->
-            <!--</action>-->
+        <!--<action method="addLink">-->
+        <!--<name>inchoo_ticketmanager_create</name>-->
+        <!--<path>inchoo_ticketmanager/ticket/create</path>-->
+        <!--<label>Inchoo Ticketmanager create</label>-->
+        <!--</action>-->
         <!--</reference>-->
     </customer_account>
 

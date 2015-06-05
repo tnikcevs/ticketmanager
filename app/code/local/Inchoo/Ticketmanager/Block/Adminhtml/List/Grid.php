@@ -1,6 +1,6 @@
 <?php
 
-class Inchoo_Ticketmanager_Block_Adminhtml_Edit_Grid extends Mage_Adminhtml_Block_Widget_Grid
+class Inchoo_Ticketmanager_Block_Adminhtml_List_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     public function __construct()
     {
@@ -43,13 +43,14 @@ class Inchoo_Ticketmanager_Block_Adminhtml_Edit_Grid extends Mage_Adminhtml_Bloc
             'index' => 'status',
             'type' => 'text',
             'width' => '170px',
+            'renderer' => 'Inchoo_Ticketmanager_Block_Adminhtml_List_Renderer_Renderer',
         ));
 
         return parent::_prepareColumns();
     }
 
-    public function getGridUrl()
+    public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/grid', array('_current' => true));
+        return $this->getUrl('*/*/view', array('id' => $row->getId()));
     }
 }
